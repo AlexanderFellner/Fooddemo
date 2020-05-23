@@ -16,7 +16,7 @@ import { AngularFirestore } from "@angular/fire/firestore";
 export class RecipeDetailPage implements OnInit {
   recipe$: Recipe;
   loading = true;
-  paramMap: ParamMap;
+  recipeId: string;
   recipeObs: Observable<Recipe>;
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -25,14 +25,27 @@ export class RecipeDetailPage implements OnInit {
     private recipeService: RecipesService,
     private router: Router,
     private afs: AngularFirestore
-  ) {}
+  ) {
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
+      this.recipeId = paramMap.get("recipeId");
+      console.log(this.recipeId);
+    });
+  }
 
   ionViewDidEnter() {
     this.recipe$ = this.recipeService.getRecipe();
   }
   ionViewWillEnter() {}
   ngOnInit() {
-    this.recipe$ = this.recipeService.getRecipe();
+    //this.recipe$ = this.recipeService.getRecipe();
+    this.recipeObs = this.afs
+      .doc<Recipe>(`recipes/${this.recipeId}/`)
+      .valueChanges();
+    this.recipeObs.subscribe((recipe) => {
+      console.log(recipe);
+      this.loading = false;
+      this.recipe$ = recipe;
+    });
   }
   deleteRecipe(recipeId: number) {
     this.alertController
