@@ -1,37 +1,35 @@
-<div *ngIf="recipe$">
-  <ion-header>
-    <ion-toolbar color="primary">
-      <ion-buttons slot="start"
-        ><ion-back-button defaultHref="/recipes"></ion-back-button
-      ></ion-buttons>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start"
+      ><ion-back-button defaultHref="/recipes"></ion-back-button
+    ></ion-buttons>
 
-      <ion-title>{{recipe$.title}}</ion-title>
-      <ion-buttons slot="primary">
-        <ion-button (click)="goToUpdateForm()"
-          ><ion-icon name="create-outline"></ion-icon
-        ></ion-button>
-        <ion-button (click)="deleteRecipe()"
-          ><ion-icon name="trash"></ion-icon
-        ></ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content>
-    <ion-grid class="ion-no-padding"
-      ><ion-row
-        ><ion-col><ion-img [src]="recipe$.imageUrl"></ion-img></ion-col
-      ></ion-row>
-      <ion-row
-        ><ion-col
-          ><ion-list
-            ><ion-item
-              class="ion-text-center"
-              *ngFor="let ingredient of recipe$.ingredients"
-              >{{ingredient}}</ion-item
-            ></ion-list
-          ></ion-col
-        ></ion-row
-      >
-    </ion-grid>
-  </ion-content>
-</div>
+    <ion-title>{{recipe$.title}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="goToUpdateForm()"
+        ><ion-icon name="create-outline"></ion-icon
+      ></ion-button>
+      <ion-button (click)="deleteRecipe()"
+        ><ion-icon name="trash"></ion-icon
+      ></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid class="ion-no-padding"
+    ><ion-row
+      ><ion-col><ion-img [src]="recipe$.imageUrl"></ion-img></ion-col
+    ></ion-row>
+    <ion-row
+      ><ion-col
+        ><ion-list
+          ><ion-item
+            class="ion-text-center"
+            *ngFor="let ingredient of recipe$.ingredients"
+            >{{ingredient}}</ion-item
+          ></ion-list
+        ></ion-col
+      ></ion-row
+    >
+  </ion-grid>
+</ion-content>

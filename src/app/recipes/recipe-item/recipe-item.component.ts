@@ -15,8 +15,7 @@ export class RecipeItemComponent implements OnInit {
   setRecipe() {
     if (this.recipeItem != null) {
       this.recipeService.setRecipe(this.recipeItem);
-      // console.log(this.recipeService.getRecipe());
-      // this.route.navigate([`../recipes/${this.recipeItem.id}`]);
+      this.route.navigate([`../recipes/${this.recipeItem.id}`]);
     }
   }
 

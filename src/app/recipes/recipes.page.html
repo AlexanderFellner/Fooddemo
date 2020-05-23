@@ -1,4 +1,4 @@
-<div *ngIf="mainView">
+<div>
   <ion-toolbar color="primary">
     <ion-title>recipes</ion-title>
     <ion-buttons slot="primary"
@@ -8,48 +8,13 @@
   </ion-toolbar>
 </div>
 <ion-content>
-  <div *ngIf="mainView">
-    <ion-list>
-      <ion-item
-        *ngFor="let recipeItem of (recipes | async)"
-        (click)="getRecipe(recipeItem)"
-      >
-        <ion-avatar slot="start">
-          <ion-img [src]="recipeItem.imageUrl"></ion-img>
-        </ion-avatar>
-        <ion-label>{{ recipeItem.title }}</ion-label></ion-item
-      ></ion-list
-    >
+  <div>
+    <ion-list
+      ><app-recipe-item
+        *ngFor="let recipe of (recipes| async)"
+        app-recipe-item
+        [recipeItem]="recipe"
+      ></app-recipe-item>
+    </ion-list>
   </div>
 </ion-content>
-
-<div
-  style="position: absolute; top: 0; left: 0; width: 100%;"
-  *ngIf="recipe && detailView"
->
-  <ion-toolbar color="primary">
-    <ion-title>recipe-detail</ion-title>
-    <ion-buttons slot="start"
-      ><ion-back-button
-        defaultHref="/recipes"
-        (click)="back()"
-      ></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-  <ion-grid
-    ><ion-row><ion-col>{{recipe.title}}</ion-col></ion-row
-    ><ion-row
-      ><ion-col><img [src]="recipe.imageUrl" /></ion-col></ion-row
-    ><ion-row
-      ><ion-col
-        ><ion-list
-          ><ion-item
-            class="ion-text-center"
-            *ngFor="let ingredient of recipe.ingredients"
-            >{{ingredient}}</ion-item
-          ></ion-list
-        ></ion-col
-      ></ion-row
-    >
-  </ion-grid>
-</div>

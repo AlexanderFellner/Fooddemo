@@ -12,9 +12,6 @@ import { DocumentChangeAction } from "@angular/fire/firestore/interfaces";
   styleUrls: ["./recipes.page.scss"],
 })
 export class RecipesPage implements OnInit {
-  //recipes: Recipe[];
-  detailView: boolean = false;
-  mainView: boolean = true;
   recipe: Recipe;
   recipes: Observable<Recipe[]>;
 
@@ -23,27 +20,11 @@ export class RecipesPage implements OnInit {
     private recipeService: RecipesService,
     private router: Router
   ) {}
-  back() {
-    this.detailView = false;
-    this.mainView = true;
-  }
-  getRecipe(recipeItem: Recipe) {
-    this.recipe = { ...recipeItem };
-    this.detailView = true;
-    this.mainView = false;
-  }
-  ionViewWillEnter() {
-    /*  console.log("ionviewwillenter");
-    this.recipes = this.recipeService.getAllRecipes();
-    console.log(this.recipes); */
-  }
+
+  ionViewWillEnter() {}
 
   ngOnInit() {
     this.recipes = this.recipeService.getAllRecipes();
-    console.log(this.recipes);
-    this.recipes.subscribe((recipes) => {
-      console.log(recipes);
-    });
   }
   onAddRecipeForm() {
     console.log("addForm");

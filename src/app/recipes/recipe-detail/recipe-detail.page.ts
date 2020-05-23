@@ -25,29 +25,14 @@ export class RecipeDetailPage implements OnInit {
     private recipeService: RecipesService,
     private router: Router,
     private afs: AngularFirestore
-  ) {
-    /* this.activatedRoute.paramMap.subscribe((data) => {
-      if (!data.has("recipeId")) {
-        this.router.navigate(["/recipes"]);
+  ) {}
 
-        return;
-      }
-      this.paramMap = data;
-    }); */
-    console.log("In Constructor");
-    // this.recipe$ = this.recipeService.getRecipe();
-    // console.log(this.recipe$);
-  }
-  ionViewWillEnter() {
-    console.log("ionviewwillenter");
-  }
   ionViewDidEnter() {
-    console.log("ionviewdidenter");
     this.recipe$ = this.recipeService.getRecipe();
-    console.log(this.recipe$);
   }
+  ionViewWillEnter() {}
   ngOnInit() {
-    console.log("in ngonit");
+    this.recipe$ = this.recipeService.getRecipe();
   }
   deleteRecipe(recipeId: number) {
     this.alertController
