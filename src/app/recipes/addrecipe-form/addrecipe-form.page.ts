@@ -22,14 +22,21 @@ export class AddrecipeFormPage implements OnInit {
     const ingredients = formprops.ingredients;
     const ingredientsarray = ingredients.split(";");
 
-    this.counter = this.recipesService.getAllRecipes().length;
-    const newRecipe: Recipe = {
+    // this.counter = this.recipesService.getAllRecipes().length;
+    /*  const newRecipe: Recipe = {
       id: this.counter,
       title: formprops.title,
       imageUrl: formprops.imageUrl,
       ingredients: ingredientsarray,
-    };
-    this.recipesService.getAllRecipes().push(newRecipe);
+    }; */
+    //this.recipesService.getAllRecipes().push(newRecipe);
+    this.recipesService.addRecipe({
+      // id: this.counter,
+      title: formprops.title,
+      imageUrl: formprops.imageUrl,
+      ingredients: ingredientsarray,
+    });
+
     console.log(this.recipesService.getAllRecipes());
     this.router.navigate(["/recipes"]);
   }

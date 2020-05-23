@@ -1,8 +1,12 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Recipe } from "../recipe.model";
+import { ActivatedRoute, Router, ParamMap } from "@angular/router";
+import { Recipe, RecipeId } from "../recipe.model";
 import { RecipesService } from "../recipes.service";
 import { AlertController } from "@ionic/angular";
+import { AngularFirestoreDocument } from "@angular/fire/firestore/document/document";
+import { map } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { AngularFirestore } from "@angular/fire/firestore";
 
 @Component({
   selector: "app-recipe-detail",
@@ -10,25 +14,40 @@ import { AlertController } from "@ionic/angular";
   styleUrls: ["./recipe-detail.page.scss"],
 })
 export class RecipeDetailPage implements OnInit {
-  recipe: Recipe;
+  recipe$: Recipe;
+  loading = true;
+  paramMap: ParamMap;
+  recipeObs: Observable<Recipe>;
   constructor(
     private activatedRoute: ActivatedRoute,
     private alertController: AlertController,
 
     private recipeService: RecipesService,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.activatedRoute.paramMap.subscribe((data) => {
+    private router: Router,
+    private afs: AngularFirestore
+  ) {
+    /* this.activatedRoute.paramMap.subscribe((data) => {
       if (!data.has("recipeId")) {
         this.router.navigate(["/recipes"]);
+
         return;
       }
-      this.recipe = this.recipeService.getRecipe(+data.get("recipeId"));
-      console.log(data.get("recipeId"));
-      console.log(this.recipe);
-    });
+      this.paramMap = data;
+    }); */
+    console.log("In Constructor");
+    // this.recipe$ = this.recipeService.getRecipe();
+    // console.log(this.recipe$);
+  }
+  ionViewWillEnter() {
+    console.log("ionviewwillenter");
+  }
+  ionViewDidEnter() {
+    console.log("ionviewdidenter");
+    this.recipe$ = this.recipeService.getRecipe();
+    console.log(this.recipe$);
+  }
+  ngOnInit() {
+    console.log("in ngonit");
   }
   deleteRecipe(recipeId: number) {
     this.alertController
@@ -40,7 +59,7 @@ export class RecipeDetailPage implements OnInit {
           {
             text: "Okay",
             handler: () => {
-              this.recipeService.deleteRecipe(this.recipe.id);
+              this.recipeService.deleteRecipe(recipeId);
               this.router.navigate(["/recipes"], { replaceUrl: true });
             },
           },

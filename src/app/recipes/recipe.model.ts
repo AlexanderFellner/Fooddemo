@@ -1,6 +1,8 @@
 export interface Recipe {
-  id: number;
   title: string;
   imageUrl: string;
   ingredients: string[];
+}
+export interface RecipeId extends Recipe {
+  id: string;
 }

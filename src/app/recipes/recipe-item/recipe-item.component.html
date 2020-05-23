@@ -1,4 +1,4 @@
-<ion-item [routerLink]="['./', recipeItem.id]">
+<ion-item (click)="setRecipe()">
   <ion-avatar slot="start">
     <ion-img [src]="recipeItem.imageUrl"></ion-img>
   </ion-avatar>

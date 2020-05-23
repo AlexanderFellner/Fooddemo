@@ -26,15 +26,14 @@ export class UpdaterecipeFormPage implements OnInit {
     const props = form.value;
     const ingredients = props.ingredients;
     const ingredientsarray = ingredients.split(";");
-
-    let oldrecipe: Recipe = this.recipeService
+    /*  let oldrecipe: Recipe = this.recipeService
       .getAllRecipes()
       .find((recipe, index) => {
         return recipe.id === this.recipeId;
       });
     oldrecipe.title = props.title;
     oldrecipe.imageUrl = props.imageUrl;
-    oldrecipe.ingredients = ingredientsarray;
+    oldrecipe.ingredients = ingredientsarray; */
     this.router.navigate(["/recipes"]);
   }
 }
