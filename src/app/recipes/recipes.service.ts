@@ -3,11 +3,8 @@ import { Recipe, RecipeId } from "./recipe.model";
 import {
   AngularFirestore,
   AngularFirestoreCollection,
-  DocumentChangeAction,
-  AngularFirestoreDocument,
-  DocumentSnapshot,
-  DocumentData,
 } from "@angular/fire/firestore";
+import { AngularFireStorage } from "@angular/fire/storage";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -15,12 +12,14 @@ import { map } from "rxjs/operators";
   providedIn: "root",
 })
 export class RecipesService {
-  private recipeId: RecipeId;
   private recipe: Recipe;
+  private imageUrl: string;
   private recipes: Observable<RecipeId[]>;
   private recipeCollection: AngularFirestoreCollection<Recipe>;
-  private recipeDocument: AngularFirestoreDocument<Recipe>;
-  constructor(private readonly afs: AngularFirestore) {
+  constructor(
+    private readonly storage: AngularFireStorage,
+    private readonly afs: AngularFirestore
+  ) {
     this.recipeCollection = this.afs.collection<Recipe>("recipes");
 
     this.recipes = this.recipeCollection.snapshotChanges().pipe(
@@ -33,25 +32,32 @@ export class RecipesService {
       )
     );
   }
-  /* private recipes: Recipe[] = [
-    {
-      id: 0,
-      title: "Schnitzel",
-      imageUrl: "https://www.gutekueche.at/img/rezept/170/wiener-schnitzel.jpg",
-      ingredients: ["French Fries", "Pork Meat", "Salad"],
-    },
-    {
-      id: 1,
-      title: "Spaghetti",
-      imageUrl:
-        "https://www.gutekueche.at/img/rezept/22388/300x199_spagetti-bolognese.jpg",
-      ingredients: ["Bolognese", "Noodles", "Tomatosauce"],
-    },
-  ]; */
 
-  addRecipe(recipe: Recipe) {
-    const id = this.afs.createId();
-    this.recipeCollection.doc(id).set(recipe);
+  addRecipe(recipe: Recipe, selectedFile?: File) {
+    if (selectedFile) {
+      console.log(selectedFile);
+      const storageref = this.storage.ref("images");
+      const storagerefchild = storageref.child(selectedFile.name);
+      storagerefchild
+        .put(selectedFile)
+        .then((uploadtask) => {
+          storagerefchild.getDownloadURL().subscribe((imageUrl) => {
+            this.imageUrl = imageUrl;
+            const id = this.afs.createId();
+            recipe.imageUrl = this.imageUrl;
+            this.recipeCollection.doc(id).set(recipe);
+            console.log("in addRecipe of recipesService");
+          });
+        })
+        .catch((error) => console.log(error));
+    } else {
+      const id = this.afs.createId();
+      this.recipeCollection.doc(id).set(recipe);
+    }
+  }
+  getRecipe(recipeId: string, recipeObs: Observable<Recipe>) {
+    recipeObs = this.afs.doc<Recipe>(`recipes/${recipeId}/`).valueChanges();
+    return recipeObs;
   }
 
   getAllRecipes(): Observable<RecipeId[]> {
@@ -59,21 +65,24 @@ export class RecipesService {
     return this.recipes;
     //return this.recipes;
   }
-  getRecipe() {
-    if (this.recipe != null) {
-      return this.recipe;
-    }
-  }
-  deleteRecipe(recipeId: number) {
-    /*   this.recipes = this.recipes.filter((recipe) => {
-      return recipe.id !== recipeId;
-    }); */
-    console.log(this.recipes);
+  deleteRecipe(recipeId: string) {
+    console.log(recipeId);
+    this.afs
+      .doc<Recipe>("recipes/" + recipeId)
+      .delete()
+      .then((res) => {
+        console.log("Recipe deleted");
+      })
+      .catch((error) => console.log(`error removing document ${error}`));
   }
   setRecipe(recipeItem: Recipe) {
     this.recipe = { ...recipeItem };
   }
-  updateRecipe(recipeId: number, title, imageUrl, ingredients) {
+  updateRecipe(recipeId: string, title, imageUrl, ingredients: string) {
+    let ingredientslist = ingredients.split(",");
+    this.afs
+      .doc<Recipe>("/recipes/" + recipeId)
+      .update({ title, imageUrl, ingredients: ingredientslist });
     /*  const recipe: Recipe = this.recipes.find((recipe, index) => {
       return recipeId === recipe.id;
     });

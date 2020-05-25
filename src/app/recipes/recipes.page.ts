@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { RecipesService } from "./recipes.service";
 import { Recipe } from "./recipe.model";
 import { Router, ActivatedRoute } from "@angular/router";
+import { AuthService } from "../authentication/auth.service";
 
 import { Observable } from "rxjs";
 import { DocumentChangeAction } from "@angular/fire/firestore/interfaces";
@@ -17,6 +18,7 @@ export class RecipesPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
     private recipeService: RecipesService,
     private router: Router
   ) {}
@@ -27,9 +29,11 @@ export class RecipesPage implements OnInit {
     this.recipes = this.recipeService.getAllRecipes();
   }
   onAddRecipeForm() {
-    console.log("addForm");
     this.router.navigate(["./addrecipeform"], {
       relativeTo: this.activatedRoute,
     });
+  }
+  logout() {
+    this.authService.logout();
   }
 }

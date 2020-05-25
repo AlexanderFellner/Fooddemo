@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "./authentication/auth.guard";
 
 const routes: Routes = [
   {
@@ -11,10 +12,25 @@ const routes: Routes = [
     path: "",
     redirectTo: "recipes",
     pathMatch: "full",
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "login",
+    loadChildren: () =>
+      import("./authentication/login-form/login-form.module").then(
+        (m) => m.LoginFormPageModule
+      ),
+  },
+  {
+    path: "register",
+    loadChildren: () =>
+      import("./authentication/register-form/register-form.module").then(
+        (m) => m.RegisterFormPageModule
+      ),
   },
   {
     path: "recipes",
-
+    canActivate: [AuthGuard],
     children: [
       {
         path: "",
@@ -43,6 +59,20 @@ const routes: Routes = [
           ),
       },
     ],
+  },
+  {
+    path: "register-form",
+    loadChildren: () =>
+      import("./authentication/register-form/register-form.module").then(
+        (m) => m.RegisterFormPageModule
+      ),
+  },
+  {
+    path: "login-form",
+    loadChildren: () =>
+      import("./authentication/login-form/login-form.module").then(
+        (m) => m.LoginFormPageModule
+      ),
   },
 ];
 

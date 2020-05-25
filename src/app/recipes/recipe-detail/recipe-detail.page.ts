@@ -28,26 +28,29 @@ export class RecipeDetailPage implements OnInit {
   ) {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       this.recipeId = paramMap.get("recipeId");
-      console.log(this.recipeId);
+      // console.log(this.recipeId);
     });
   }
 
   ionViewDidEnter() {
-    this.recipe$ = this.recipeService.getRecipe();
+    console.log("ionviewdidenter");
+    console.log(this.recipe$);
   }
   ionViewWillEnter() {}
   ngOnInit() {
-    //this.recipe$ = this.recipeService.getRecipe();
-    this.recipeObs = this.afs
+    this.recipeObs = this.recipeService.getRecipe(
+      this.recipeId,
+      this.recipeObs
+    );
+    /* this.recipeObs = this.afs
       .doc<Recipe>(`recipes/${this.recipeId}/`)
-      .valueChanges();
+      .valueChanges();*/
     this.recipeObs.subscribe((recipe) => {
-      console.log(recipe);
       this.loading = false;
       this.recipe$ = recipe;
     });
   }
-  deleteRecipe(recipeId: number) {
+  deleteRecipe(recipeId: string) {
     this.alertController
       .create({
         header: "Are You sure?",
@@ -66,8 +69,11 @@ export class RecipeDetailPage implements OnInit {
       .then((alertEl) => alertEl.present());
   }
   goToUpdateForm(recipeId: number) {
-    this.router.navigate(["../../updaterecipeform", { recipeId }], {
-      relativeTo: this.activatedRoute,
-    });
+    this.router.navigate(
+      ["../../updaterecipeform", { recipeId, ...this.recipe$ }],
+      {
+        relativeTo: this.activatedRoute,
+      }
+    );
   }
 }

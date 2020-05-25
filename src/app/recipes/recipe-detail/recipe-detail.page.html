@@ -1,5 +1,5 @@
 <ion-header>
-  <div *ngIf="!loading && recipe$">
+  <div *ngIf="recipeObs | async as recipe$">
     <ion-toolbar color="primary">
       <ion-buttons slot="start"
         ><ion-back-button defaultHref="/recipes"></ion-back-button
@@ -7,10 +7,10 @@
 
       <ion-title>{{recipe$.title}}</ion-title>
       <ion-buttons slot="primary">
-        <ion-button (click)="goToUpdateForm()"
+        <ion-button (click)="goToUpdateForm(recipeId)"
           ><ion-icon name="create-outline"></ion-icon
         ></ion-button>
-        <ion-button (click)="deleteRecipe()"
+        <ion-button (click)="deleteRecipe(recipeId)"
           ><ion-icon name="trash"></ion-icon
         ></ion-button>
       </ion-buttons>
@@ -18,7 +18,7 @@
   </div>
 </ion-header>
 <ion-content>
-  <div *ngIf="!loading && recipe$">
+  <div *ngIf="recipeObs | async as recipe$">
     <ion-grid class="ion-no-padding"
       ><ion-row
         ><ion-col><ion-img [src]="recipe$.imageUrl"></ion-img></ion-col
