@@ -28,23 +28,16 @@ export class RecipeDetailPage implements OnInit {
   ) {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       this.recipeId = paramMap.get("recipeId");
-      // console.log(this.recipeId);
     });
   }
 
-  ionViewDidEnter() {
-    console.log("ionviewdidenter");
-    console.log(this.recipe$);
-  }
+  ionViewDidEnter() {}
   ionViewWillEnter() {}
   ngOnInit() {
     this.recipeObs = this.recipeService.getRecipe(
       this.recipeId,
       this.recipeObs
     );
-    /* this.recipeObs = this.afs
-      .doc<Recipe>(`recipes/${this.recipeId}/`)
-      .valueChanges();*/
     this.recipeObs.subscribe((recipe) => {
       this.loading = false;
       this.recipe$ = recipe;

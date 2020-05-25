@@ -32,8 +32,14 @@ export class RecipesService {
       )
     );
   }
-
-  addRecipe(recipe: Recipe, selectedFile?: File) {
+  addOrUpdataRecipe(
+    recipeId?: string,
+    title?: string,
+    imageUrl?: string,
+    ingredients?: string,
+    selectedFile?: File,
+    recipe?: Recipe
+  ) {
     if (selectedFile) {
       console.log(selectedFile);
       const storageref = this.storage.ref("images");
@@ -43,17 +49,37 @@ export class RecipesService {
         .then((uploadtask) => {
           storagerefchild.getDownloadURL().subscribe((imageUrl) => {
             this.imageUrl = imageUrl;
-            const id = this.afs.createId();
-            recipe.imageUrl = this.imageUrl;
-            this.recipeCollection.doc(id).set(recipe);
-            console.log("in addRecipe of recipesService");
+
+            if (!recipeId) {
+              const id = this.afs.createId();
+              recipe.imageUrl = this.imageUrl;
+              this.recipeCollection.doc(id).set(recipe);
+            }
+            if (recipeId) {
+              let ingredientslist = ingredients.split(",");
+              this.afs
+                .doc<Recipe>("/recipes/" + recipeId)
+                .update({ title, imageUrl, ingredients: ingredientslist });
+            }
           });
         })
         .catch((error) => console.log(error));
     } else {
-      const id = this.afs.createId();
-      this.recipeCollection.doc(id).set(recipe);
+      if (!recipeId) {
+        const id = this.afs.createId();
+        this.recipeCollection.doc(id).set(recipe);
+      }
+      if (recipeId) {
+        let ingredientslist = ingredients.split(",");
+        this.afs
+          .doc<Recipe>("/recipes/" + recipeId)
+          .update({ title, imageUrl, ingredients: ingredientslist });
+      }
     }
+  }
+
+  addRecipe(recipe: Recipe, selectedFile?: File) {
+    this.addOrUpdataRecipe(null, null, null, null, selectedFile, recipe);
   }
   getRecipe(recipeId: string, recipeObs: Observable<Recipe>) {
     recipeObs = this.afs.doc<Recipe>(`recipes/${recipeId}/`).valueChanges();
@@ -61,34 +87,34 @@ export class RecipesService {
   }
 
   getAllRecipes(): Observable<RecipeId[]> {
-    //return [...this.recipes];
     return this.recipes;
-    //return this.recipes;
   }
   deleteRecipe(recipeId: string) {
-    console.log(recipeId);
     this.afs
       .doc<Recipe>("recipes/" + recipeId)
       .delete()
-      .then((res) => {
-        console.log("Recipe deleted");
-      })
+      .then((res) => {})
       .catch((error) => console.log(`error removing document ${error}`));
   }
   setRecipe(recipeItem: Recipe) {
     this.recipe = { ...recipeItem };
   }
-  updateRecipe(recipeId: string, title, imageUrl, ingredients: string) {
-    let ingredientslist = ingredients.split(",");
-    this.afs
+  updateRecipe(
+    recipeId: string,
+    title,
+    imageUrl,
+    ingredients: string,
+    selectedFile?: File
+  ) {
+    /*  this.afs
       .doc<Recipe>("/recipes/" + recipeId)
-      .update({ title, imageUrl, ingredients: ingredientslist });
-    /*  const recipe: Recipe = this.recipes.find((recipe, index) => {
-      return recipeId === recipe.id;
-    });
-    recipe.title = title;
-    recipe.imageUrl = imageUrl;
-    recipe.ingredients = ingredients; */
-    //console.log(recipe);
+      .update({ title, imageUrl, ingredients: ingredientslist }); */
+    this.addOrUpdataRecipe(
+      recipeId,
+      title,
+      imageUrl,
+      ingredients,
+      selectedFile
+    );
   }
 }

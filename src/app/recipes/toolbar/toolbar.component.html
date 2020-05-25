@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="start"
+      ><ion-back-button defaultHref="/recipes"></ion-back-button
+    ></ion-buttons>
+
+    <input
+      style="display: none;"
+      name="fileInput"
+      id="fileInput"
+      #fileInput
+      type="file"
+      (change)="selectFile($event)"
+    />
+    <ion-buttons slot="primary">
+      <ion-button (click)="upload(fileInput)"
+        ><ion-icon name="cloud-upload-outline"></ion-icon></ion-button
+      ><ion-button (click)="logout()"
+        ><ion-icon name="log-out-outline"></ion-icon></ion-button
+    ></ion-buttons>
+  </ion-toolbar>
+</ion-header>

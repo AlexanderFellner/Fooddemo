@@ -1,27 +1,7 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>addrecipe-form</ion-title>
-    <ion-buttons slot="start"
-      ><ion-back-button defaultHref="/recipes"></ion-back-button
-    ></ion-buttons>
-
-    <input
-      style="display: none;"
-      name="fileInput"
-      id="fileInput"
-      #fileInput
-      type="file"
-      (change)="selectFile($event)"
-    />
-    <ion-buttons slot="primary">
-      <ion-button (click)="upload(fileInput)"
-        ><ion-icon name="cloud-upload-outline"></ion-icon></ion-button
-      ><ion-button (click)="logout()"
-        ><ion-icon name="log-out-outline"></ion-icon></ion-button
-    ></ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
+<app-toolbar
+  title="addrecipe-form"
+  (uploaded)="onUploaded($event)"
+></app-toolbar>
 <ion-content>
   <form #addForm="ngForm" (submit)="onAddRecipe(addForm)">
     <ion-grid
@@ -30,9 +10,10 @@
           ><ion-item
             ><ion-label position="floating">Title</ion-label
             ><ion-input
+              required
+              [ngClass]="{'red':titleerror}"
               name="title"
-              ngModel
-              #title="ngModel"
+              [(ngModel)]="title"
               type="text"
             ></ion-input></ion-item></ion-col></ion-row
       ><ion-row>
@@ -40,6 +21,8 @@
           <ion-item>
             <ion-label position="floating">ImageUrl</ion-label
             ><ion-input
+              required
+              [ngClass]="{'red':imageUrlerror}"
               name="imageUrl"
               [(ngModel)]="imageUrl"
               type="text"
@@ -50,8 +33,10 @@
             ><ion-label position="floating"
               >Ingredients(Must be separeted with commas)</ion-label
             ><ion-input
+              required
+              [ngClass]="{'red':ingredientserror}"
               name="ingredients"
-              ngModel
+              [(ngModel)]="ingredients"
               type="text"
             ></ion-input></ion-item></ion-col
       ></ion-row>

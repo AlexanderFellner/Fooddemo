@@ -19,30 +19,22 @@ export class AuthService {
   ) {
     this.auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log(user.uid);
         this.uuid = user.uid;
         this.afs.doc<User>("users/" + user.uid).set({ email: user.email });
-
-        console.log(" user is signed in");
       } else {
-        console.log("user not signed in");
       }
     });
     this.user$ = this.auth.authState;
     this.user$.subscribe((user) => {
       if (user) {
-        console.log(user.email);
         this.router.navigate(["/recipes/"]);
       } else {
-        /*  console.log("user not signed in");
-        this.router.navigate(["/login"]); */
       }
     });
   }
   logout() {
     if (this.auth.currentUser != null) {
       this.auth.signOut().then(() => {
-        console.log("user is signout");
         this.router.navigate(["/login"]);
       });
     }

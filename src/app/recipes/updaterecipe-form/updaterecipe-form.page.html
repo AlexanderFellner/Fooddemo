@@ -1,15 +1,7 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>updaterecipe-form</ion-title>
-    <ion-buttons slot="start"
-      ><ion-back-button defaultHref="/recipes"></ion-back-button
-    ></ion-buttons>
-    <ion-buttons slot="primary"
-      ><ion-button (click)="logout()"
-        ><ion-icon name="log-out-outline"></ion-icon></ion-button
-    ></ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<app-toolbar
+  title="updaterecipe-form"
+  (uploaded)="onUploaded($event)"
+></app-toolbar>
 
 <ion-content>
   <form #updateForm="ngForm" (submit)="onUpdateRecipe(updateForm)">
@@ -20,6 +12,8 @@
             ><ion-label position="floating">Title</ion-label
             ><ion-input
               name="title"
+              required
+              [ngClass]="{'red':titleerror}"
               [(ngModel)]="title"
               type="text"
             ></ion-input></ion-item></ion-col></ion-row
@@ -29,6 +23,8 @@
             <ion-label position="floating">ImageUrl</ion-label
             ><ion-input
               name="imageUrl"
+              [ngClass]="{'red':imageUrlerror}"
+              required
               [(ngModel)]="imageUrl"
               type="text"
             ></ion-input></ion-item></ion-col></ion-row
@@ -38,6 +34,8 @@
             ><ion-label position="floating"
               >Ingredients(Must be separeted with Komma)</ion-label
             ><ion-input
+              required
+              [ngClass]="{'red':ingredientserror}"
               name="ingredients"
               [(ngModel)]="ingredients"
               type="text"

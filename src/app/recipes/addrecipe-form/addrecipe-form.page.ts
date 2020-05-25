@@ -1,12 +1,8 @@
-import { Component, OnInit, ElementRef } from "@angular/core";
-import { NgForm, NgControl, FormControl } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { NgForm } from "@angular/forms";
 import { RecipesService } from "../recipes.service";
-import { Recipe } from "../recipe.model";
 import { Router } from "@angular/router";
 import { AuthService } from "src/app/authentication/auth.service";
-import { IonInput } from "@ionic/angular";
-import { InterpolationConfig } from "@angular/compiler";
-import { AngularFireStorage } from "@angular/fire/storage";
 
 @Component({
   selector: "app-addrecipe-form",
@@ -14,31 +10,28 @@ import { AngularFireStorage } from "@angular/fire/storage";
   styleUrls: ["./addrecipe-form.page.scss"],
 })
 export class AddrecipeFormPage implements OnInit {
-  private counter: number = 0;
+  ingredients: string;
   imageUrl: string;
+  title: string;
   selectedFile: File;
+  titleerror = false;
+  imageUrlerror = false;
+  ingredientserror = false;
   constructor(
-    private storage: AngularFireStorage,
     private authService: AuthService,
     private recipesService: RecipesService,
-    private router: Router,
-    private eleref: ElementRef
+    private router: Router
   ) {}
 
   ngOnInit() {}
   onAddRecipe(form: NgForm) {
     const formprops = form.value;
-    console.log(formprops.title);
-    console.log(formprops.imageUrl);
-    console.log(formprops.ingredients);
     const ingredients = formprops.ingredients;
-    const ingredientsarray = ingredients.split(",");
-    //console.log(this.selectedFile);
+
     if (formprops.title && formprops.imageUrl && formprops.ingredients) {
-      console.log("in onaddrecipe formprops");
+      const ingredientsarray = ingredients.split(",");
       this.recipesService.addRecipe(
         {
-          // id: this.counter,
           title: formprops.title,
           imageUrl: formprops.imageUrl,
           ingredients: ingredientsarray,
@@ -46,40 +39,33 @@ export class AddrecipeFormPage implements OnInit {
         },
         this.selectedFile
       );
+      this.router.navigate(["/recipes"]);
     }
-
-    //console.log(this.recipesService.getAllRecipes());
-    this.router.navigate(["/recipes"]);
-  }
-  log(x) {
-    console.log(x);
+    if (!formprops.title) {
+      this.titleerror = true;
+      this.title = "title is required";
+    }
+    if (!formprops.imageUrl) {
+      this.imageUrlerror = true;
+      this.imageUrl = "imageUrl is required";
+    }
+    if (!formprops.ingredients) {
+      this.ingredientserror = true;
+      this.ingredients = "ingredients are required";
+    }
   }
   logout() {
     this.authService.logout();
   }
-  selectFile(event) {
-    //console.log(<File>event.target.files[0]);
+  /* selectFile(event) {
     this.selectedFile = event.target.files[0];
     this.imageUrl = this.selectedFile.name;
-
-    /* console.log(this.selectedFile);
-    const storageref = this.storage.ref("images");
-    const storagerefchild = storageref.child(this.selectedFile.name);
-    storagerefchild.put(this.selectedFile).then((uploadtask) => {
-      storagerefchild.getDownloadURL().subscribe((imageUrl) => {
-        // this.imageUrl = imageUrl;
-        console.log("in getdownloadurl");
-        console.log(imageUrl);
-      });
-    });
-    //   .catch((error) => console.log(error));
-
-    const metadata = storageref.getMetadata(); */
-    // metadata.subscribe((metadata) => console.log(metadata));
-  }
+  } */
   upload(fileInput) {
-    /*  let smallBox = this.eleref.nativeElement.querySelector("#fileInput"); // parens
-    smallBox.dispatchEvent(new Event("click")); */
     fileInput.click();
+  }
+  onUploaded(event) {
+    this.selectedFile = event;
+    this.imageUrl = event.name;
   }
 }

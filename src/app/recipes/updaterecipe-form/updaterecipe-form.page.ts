@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgForm } from "@angular/forms";
-import { Recipe } from "../recipe.model";
 import { RecipesService } from "../recipes.service";
 import { AuthService } from "src/app/authentication/auth.service";
 
@@ -19,40 +18,56 @@ export class UpdaterecipeFormPage implements OnInit {
   ) {}
   recipeId: string;
   title;
+  titleerror;
+  ingredientserror;
   imageUrl;
+  imageUrlerror;
   ingredients;
+  selectedFile: File;
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
-      console.log(paramMap.get("recipeId"));
       this.recipeId = paramMap.get("recipeId");
       this.title = paramMap.get("title");
-      console.log(paramMap.get("title"));
       this.imageUrl = paramMap.get("imageUrl");
-      console.log(paramMap.get("imageUrl"));
       this.ingredients = paramMap.get("ingredients");
-      console.log(paramMap.get("ingredients"));
     });
   }
   onUpdateRecipe(form: NgForm) {
-    const props = form.value;
-    const ingredients = props.ingredients;
-    this.recipeService.updateRecipe(
-      this.recipeId,
-      this.title,
-      this.imageUrl,
-      this.ingredients
-    );
-    /*  let oldrecipe: Recipe = this.recipeService
-      .getAllRecipes()
-      .find((recipe, index) => {
-        return recipe.id === this.recipeId;
-      });
-    oldrecipe.title = props.title;
-    oldrecipe.imageUrl = props.imageUrl;
-    oldrecipe.ingredients = ingredientsarray; */
-    this.router.navigate(["/recipes"]);
+    if (this.title && this.imageUrl && this.ingredients) {
+      this.recipeService.updateRecipe(
+        this.recipeId,
+        this.title,
+        this.imageUrl,
+        this.ingredients,
+        this.selectedFile
+      );
+      this.router.navigate(["/recipes"]);
+    }
+    if (!this.title) {
+      this.titleerror = true;
+      this.title = "title is required";
+    }
+    if (!this.imageUrl) {
+      this.imageUrlerror = true;
+      this.imageUrl = "imageUrl is required";
+    }
+    if (!this.ingredients) {
+      this.ingredientserror = true;
+      this.ingredients = "ingredients are required";
+    }
   }
   logout() {
     this.authService.logout();
+  }
+  /*  selectFile(event) {
+    this.selectedFile = event.target.files[0];
+    this.imageUrl = this.selectedFile.name;
+  } */
+  upload(fileInput) {
+    fileInput.click();
+  }
+  onUploaded(event) {
+    this.selectedFile = event;
+    this.imageUrl = event.name;
   }
 }
